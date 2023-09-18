@@ -9,19 +9,27 @@ function crearTarea(nuevaTarea) {
 }
 
 function verListaDetareasCompletas() {
-  const completada = listaTareas.filter((tarea) => tarea.completada === true);
-  const resultado = completada.map((tarea) => {
-    return `Tarea completada: ${tarea.id} - ${tarea.descripcion}`;
-  });
+  const completadas = listaTareas.filter((tarea) => tarea.completada === true);
+  if (completadas.length === 0) {
+    return `No hay tareas completadas, ponte al dia`;
+  }
+  const resultado = completadas.map(
+    (tarea) =>
+      `tarea completada: ID ${tarea.id} y su Descripcion ${tarea.descripcion}`
+  );
   return resultado;
 }
 
 function verListaDetareasIncompletas() {
   const incompletas = listaTareas.filter((tarea) => tarea.completada === false);
-  const resultado = incompletas.map((tarea) => {
-    return `Tarea Incompleta: ${tarea.id} - ${tarea.descripcion}`;
-  });
-  return resultado;
+  if (incompletas.length === 0) {
+    return `No hay Tareas incompletas, estas al dia`;
+  }
+  const resultado = incompletas.map(
+    (tarea) =>
+      `Tareas incompletas: ID ${tarea.id} y su Descripcion ${tarea.descripcion}`
+  );
+  return resultado
 }
 
 function eliminarTarea(tareaId) {
@@ -29,10 +37,18 @@ function eliminarTarea(tareaId) {
   listaTareas = nuevasTareas;
 }
 
-function actualizarTarea(id, nuevoCompletada) {
-  if (id >= 0 && id < listaTareas.length) {
-    listaTareas[id].completada = nuevoCompletada;
+function actualizarTarea(id, nuevaTarea) {
+  const index = listaTareas.findIndex((listaTareas) => listaTareas.id === id);
+  if (index !== -1) {
+    listaTareas[index] = { ...listaTareas[index], ...nuevaTarea };
+    return `Tarea actualizada: ${listaTareas[index]}`;
+  } else {
+    return `No se encontro la tarea con id: ${id}, intenta nuevamente`;
   }
+}
+
+function buscarTareaPorId(id) {
+  return listaTareas.find((tarea) => tarea.id === id);
 }
 
 function imprimirTareasCompletas() {
@@ -46,4 +62,5 @@ module.exports = {
   eliminarTarea,
   actualizarTarea,
   imprimirTareasCompletas,
+  buscarTareaPorId,
 };
