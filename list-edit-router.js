@@ -2,6 +2,9 @@ const express = require("express");
 const listEditRouter = express.Router();
 const funcionTareasEditar = require("./listatareas");
 
+
+// Ruta para hacer solicitudes .post esta nos sirve para Crear una nueva Tarea, enviandole un body
+// en formato Json
 listEditRouter.post("/crear", (req, res) => {
   funcionTareasEditar.crearTarea(req.body);
   res.json({
@@ -11,6 +14,7 @@ listEditRouter.post("/crear", (req, res) => {
   });
 });
 
+// Ruta para hacer solicitudes .delete esta nos sirve para Borrar una tarea por medio del id
 listEditRouter.delete("/borrar/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const tareaExistente = funcionTareasEditar.buscarTareaPorId(id);
@@ -27,6 +31,7 @@ listEditRouter.delete("/borrar/:id", (req, res) => {
   }
 });
 
+// Ruta para hacer solicitudes .put esta nos sirve para Actualizar una tarea mediante el id
 listEditRouter.put("/actualizar/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const siExisteTarea = funcionTareasEditar.buscarTareaPorId(id);
@@ -44,4 +49,5 @@ listEditRouter.put("/actualizar/:id", (req, res) => {
   }
 });
 
+// exportando los endpoints al servidor principal
 module.exports = listEditRouter;
