@@ -1,22 +1,14 @@
-// array con una lista de Tareas
-let listaTareas = [
-  { id: 1, descripcion: "hacer tarea de matematicas", completada: false },
-  { id: 2, descripcion: "hacer tarea de programacion", completada: false },
-  { id: 3, descripcion: "hacer tarea de fisica", completada: false },
-];
+let listaTareas = require('./arrayListaTareas');
 
 // Funcion para crear nuevas tareas
 function crearTarea(nuevaTarea) {
-  listaTareas.push(nuevaTarea);
+    listaTareas.push(nuevaTarea)
 }
 
 // Funcion para buscar una tarea mediante su id
 function buscarTareaPorId(id) {
   const tareaBuscada = listaTareas.find((tarea) => tarea.id === id);
-  if (!tareaBuscada) {
-    return `la tarea con id ${id} no fue encontrada`;
-  }
-  return tareaBuscada;
+  return tareaBuscada
 }
 
 // Funcion para ver la lista de tareas completas = true
@@ -32,6 +24,7 @@ function verListaDetareasCompletas() {
   return resultado;
 }
 
+
 // Funcion para ver la lista de tareas incompletas = false
 function verListaDetareasIncompletas() {
   const incompletas = listaTareas.filter((tarea) => tarea.completada === false);
@@ -42,7 +35,7 @@ function verListaDetareasIncompletas() {
     (tarea) =>
       `Tareas incompletas: ID ${tarea.id} y su Descripcion ${tarea.descripcion}`
   );
-  return resultado;
+  return resultado
 }
 
 // Funcion para eliminar una tarea mediante el id
@@ -50,6 +43,7 @@ function eliminarTarea(tareaId) {
   let nuevasTareas = listaTareas.filter((tarea) => tarea.id !== tareaId);
   listaTareas = nuevasTareas;
 }
+
 
 // Funcion para ver actualizar una tarea
 function actualizarTarea(id, nuevaTarea) {
@@ -67,7 +61,7 @@ function imprimirTareasCompletas() {
   return listaTareas;
 }
 
-// exportando todas la funciones para ser utilizadas en las rutas
+
 module.exports = {
   verListaDetareasCompletas,
   verListaDetareasIncompletas,

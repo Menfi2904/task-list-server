@@ -2,11 +2,45 @@ const express = require("express");
 const listEditRouter = express.Router();
 const funcionTareasEditar = require("./listatareas");
 
+//Middleware que maneja errores retornando un código de respuesta 400:
+//Solicitudes POST y PUT con el cuerpo vacio
+//Solicitudes POST y PUT que tengan información no valida
+function manejarErrores(req, res, next) {
+  if (req.method === "POST") {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        errorMessage: "el cuerpo no puede estar vacio, intenta nuevamente",
+      });
+    }
+  }
+  if (req.method === "POST" && (!req.body.id || !req.body.descripcion)) {
+    return res.status(400).json({
+      errorMessage:
+        "para crear una tarea debes agregar un id y una descripcion",
+    });
+  }
+  if (req.method === "PUT") {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res
+        .status(400)
+        .json({ errorMessage: "El cuerpo de la tarea no puede estar vacio" });
+    }
+  }
+  if (req.method === "PUT" && (!req.body.descripcion || !req.body.completada)) {
+    return res
+      .status(400)
+      .json({
+        errorMessage:
+          "Debes agregar una descripcion y un estado de completada validos",
+      });
+  }
 
-// Ruta para hacer solicitudes .post esta nos sirve para Crear una nueva Tarea, enviandole un body
-// en formato Json
-listEditRouter.post("/crear", (req, res) => {
-  funcionTareasEditar.crearTarea(req.body);
+  next();
+}
+
+listEditRouter.post("/crear", manejarErrores, (req, res) => {
+  const nuevaTarea = { ...req.body, completada: false };
+  funcionTareasEditar.crearTarea(nuevaTarea);
   res.json({
     status: 200,
     message: "La tarea ha sido creada",
@@ -14,7 +48,23 @@ listEditRouter.post("/crear", (req, res) => {
   });
 });
 
-// Ruta para hacer solicitudes .delete esta nos sirve para Borrar una tarea por medio del id
+listEditRouter.put("/actualizar/:id", manejarErrores, (req, res) => {
+  const id = parseInt(req.params.id);
+  const tareaExistente = funcionTareasEditar.buscarTareaPorId(id);
+  if (!tareaExistente) {
+    res.status(404).json({
+      status: 404,
+      message: `No puedes actualizar la tarea con id ${id} porque no existe`,
+    });
+  } else {
+    funcionTareasEditar.actualizarTarea(id, req.body);
+    res.json({
+      status: 200,
+      message: `la tarea con id ${req.params.id} fue editada exitosamente`,
+    });
+  }
+});
+
 listEditRouter.delete("/borrar/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const tareaExistente = funcionTareasEditar.buscarTareaPorId(id);
@@ -31,23 +81,4 @@ listEditRouter.delete("/borrar/:id", (req, res) => {
   }
 });
 
-// Ruta para hacer solicitudes .put esta nos sirve para Actualizar una tarea mediante el id
-listEditRouter.put("/actualizar/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const siExisteTarea = funcionTareasEditar.buscarTareaPorId(id);
-  if (!siExisteTarea) {
-    res.status(404).json({
-      status: 404,
-      message: `No se encontro la tarea con ID ${id}, intenta nuevamente`,
-    });
-  } else {
-    funcionTareasEditar.actualizarTarea(id, req.body);
-    res.json({
-      status: 200,
-      message: `la tarea con id ${req.params.id} fue editada exitosamente`,
-    });
-  }
-});
-
-// exportando los endpoints al servidor principal
 module.exports = listEditRouter;
