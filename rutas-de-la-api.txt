@@ -1,0 +1,15 @@
+Rutas de la API lista de tareas:
+
+localhost:3000/                                     <== bienvida al servidor (mirar en el navegador)
+localhost:3000/listadetareas/                       <== Nos muestra la lista completa de tareas
+localhost:3000/listadetareas/completas
+localhost:3000/listadetareas/incompletas
+
+
+localhost:3000/editartareas/crear
+localhost:3000/editartareas/actualizar/:id
+localhost:3000/editartareas/borrar/:id
+localhost:3000/editartareas/buscar/:id
+
+
+localhost:3000/login                                <=== esta es la ruta post que genera un JWT.

@@ -1,33 +1,25 @@
 const express = require("express");
 const listViewRouter = express.Router();
-const funcionTareas = require("./listatareas");
+const listaTareas = require("./arrayListaTareas");
+const validateToken = require('./middleware-validate-token')
+const middleware = require('./middlewares')
 
-//Middleware que nos permite validar que las rutas sean correctas
-function validarRutas(req, res, next) {
-  const rutasValidas = ["/", "/completas", "/incompletas"];
-  if (rutasValidas.includes(req.path)) {
-    next();
-  } else {
-    return res.status(402).json({
-      error: "Ruta Invalida",
-      message:
-        "Por favor utiliza una de las rutas validas: /, /completas o /incompletas",
-    });
-  }
-}
-
-listViewRouter.use(validarRutas);
+//estas rutas contiene 2 middlewares, uno que valida el token JWT, y otro que se encarga de dar un error
+// en caso de que las rutas esten mal escritas.
+listViewRouter.use(validateToken, middleware.validarRutas);
 
 listViewRouter.get("/", (req, res) => {
-  res.json(funcionTareas.imprimirTareasCompletas());
+  res.json(listaTareas);
 });
 
 listViewRouter.get("/completas", (req, res) => {
-  res.json(funcionTareas.verListaDetareasCompletas());
+  const buscarTarea = listaTareas.filter((buscar) => buscar.completada === true)
+  res.json({tareasCompletas: buscarTarea});
 });
 
 listViewRouter.get("/incompletas", (req, res) => {
-  res.json(funcionTareas.verListaDetareasIncompletas());
+  const buscarTarea = listaTareas.filter((buscar) => buscar.completada === false)
+  res.json({tareasIncompletas: buscarTarea})
 });
 
 module.exports = listViewRouter;
